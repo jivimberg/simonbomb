@@ -59,7 +59,7 @@ angular.module('simonbombApp')
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
+        controller: 'GameCtrl'
       })
 
       .when('/chat', {

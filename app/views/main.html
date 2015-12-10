@@ -4,8 +4,12 @@
     <img src="images/yeoman.png" alt="I'm Yeoman"><br>
     How many can you remember?
   </p>
-  <p><a class="btn btn-lg btn-success" ng-href="#/">Green</a></p>
-  <p><a class="btn btn-lg btn-info" ng-href="#/">Light Blue</a></p>
-  <p><a class="btn btn-lg btn-warning" ng-href="#/">Yellow</a></p>
-  <p><a class="btn btn-lg btn-danger" ng-href="#/">Red</a></p>
+  <p><a class="btn btn-lg btn-success"  ng-click="pickColor('Green');">Green</a></p>
+  <p><a class="btn btn-lg btn-info" ng-click="pickColor('LightBlue');">Light Blue</a></p>
+  <p><a class="btn btn-lg btn-warning" ng-click="pickColor('Yellow');">Yellow</a></p>
+  <p><a class="btn btn-lg btn-danger" ng-click="pickColor('Red');">Red</a></p>
 </div>
+
+<ul id="colors" ng-show="simonSequence.length">
+  <li ng-repeat="color in simonSequence | reverse">{{color.text}}</li>
+</ul>

@@ -15,7 +15,7 @@ angular.module('simonbombApp')
     $scope.messages.$loaded().catch(alert);
 
     // provide a method for adding a message
-    $scope.pickColor = function(newMessage) {
+    $scope.addMessage = function(newMessage) {
       if( newMessage ) {
         // push a message to the end of the array
         $scope.messages.$add({text: newMessage})
