@@ -25,6 +25,11 @@ angular.module('simonbombApp')
       }
     };
 
+    $scope.newGame = function() {
+      // push a message to the end of the array
+      Ref.child('simonSequence').remove();
+    };
+
     function alert(msg) {
       $scope.err = msg;
       $timeout(function() {
