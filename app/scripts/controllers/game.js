@@ -8,9 +8,18 @@
  * Controller of the simonbombApp
  */
 angular.module('simonbombApp')
-  .controller('GameCtrl', function ($scope, Ref, $firebaseArray, $timeout) {
+  .controller('GameCtrl', function ($scope, Ref, Auth, $firebaseArray, $timeout) {
+    // Set the timer
+    Ref.child('.info/serverTimeOffset').on('value', function(snap) {
+      myOffset = snap.val()||0;
+    });
+    Ref.child('running').on('value', toggleRunning);
+    Ref.child('endtime').on('value', updateEndTime);
+
     // synchronize a read-only, synchronized array of colors, limit to most recent 100
     $scope.simonSequence = $firebaseArray(Ref.child('simonSequence').limitToLast(100));
+
+    $scope.players = $firebaseArray(Ref.child('players').limitToLast(20));
 
     // display any errors
     $scope.simonSequence.$loaded().catch(alert);
@@ -28,14 +37,16 @@ angular.module('simonbombApp')
     $scope.newGame = function() {
       // clean the sequence
       Ref.child('simonSequence').remove();
-
-      Ref.child('.info/serverTimeOffset').on('value', function(snap) {
-        myOffset = snap.val()||0;
-      });
-      Ref.child('running').on('value', toggleRunning);
-      Ref.child('endtime').on('value', updateEndTime);
       Ref.child('endtime').set(now() + RESET_SECONDS * 1000);
       Ref.child('running').set(true);
+    };
+
+    $scope.loginNewPlayer = function () {
+      Auth.$authAnonymously({rememberMe: "sessionOnly"})
+        .then(function(authData) {
+          console.log("Authenticated successfully with payload:", authData);
+          $scope.players.$add({uid: authData.uid})
+        });
     };
 
     function alert(msg) {
