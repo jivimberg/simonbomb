@@ -31,8 +31,50 @@ angular.module('simonbombApp')
         $scope.simonSequence.$add({text: color})
           // display any errors
           .catch(alert);
+
+        glowSequence();
       }
     };
+
+    function glowSequence(idx) {
+      if(typeof idx == "undefined") {
+        idx = 0;
+      }
+
+      if(idx >= $scope.simonSequence.length){
+        return;
+      }
+
+      var color = $scope.simonSequence[idx].text;
+      console.log("Make: " + color + " shine");
+      var colorEntry = colorMap[color];
+      var btn = $("." + colorEntry.baseClass);
+      var originalBackgroundColor = btn.css("background-color");
+      var originalBorderColor = btn.css("border-color");
+      btn.animate(
+        {
+          "background-color": colorEntry.brightColor,
+          "border-color": colorEntry.brightColor,
+          height: '+=15px',
+          width: '+=15px'
+        }, "slow",
+        function() {
+          console.log(color + " back to normal");
+          setTimeout(function() {
+            btn.animate(
+              {
+                "background-color": originalBackgroundColor,
+                "border-color": originalBorderColor,
+                height: '-=50px',
+                width: '-=50px'
+              }, "slow",
+              function () {
+                  console.log("Next color");
+                  glowSequence(++idx);
+                });
+          }, 500);
+        });
+      }
 
     $scope.newGame = function() {
       // clean the sequence
@@ -100,6 +142,13 @@ angular.module('simonbombApp')
       else {
         return n;
       }
+    }
+
+    var colorMap = {
+      "Green": { baseClass: "btn-success", brightColor:"#00ff00"},
+      "LightBlue": { baseClass: "btn-info", brightColor:"#0000ff"},
+      "Yellow": { baseClass: "btn-warning", brightColor:"#ff6600"},
+      "Red": { baseClass: "btn-danger", brightColor:"#ff0000"}
     }
 
   });
