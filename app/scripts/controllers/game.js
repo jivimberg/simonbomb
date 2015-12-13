@@ -23,24 +23,38 @@ angular.module('simonbombApp')
     $scope.players = $firebaseArray(Ref.child('players').limitToLast(20));
 
     $scope.currentPlayerIdx = $firebaseObject(Ref.child('currentPlayerIdx'));
+    $scope.currentSequenceIdx = $firebaseObject(Ref.child('currentSequenceIdx'));
 
     // display any errors
     $scope.simonSequence.$loaded().catch(alert);
+    $scope.players.$loaded().catch(alert);
+    $scope.currentPlayerIdx.$loaded().catch(alert);
 
     // provide a method for adding a message
     $scope.pickColor = function(color) {
-      if( color ) {
-        // push a message to the end of the array
+      if($scope.currentSequenceIdx.$value < $scope.simonSequence.length) {
+        if($scope.simonSequence[$scope.currentSequenceIdx.$value].text != color){
+          window.alert("WRONG! Game over");
+        } else {
+          $scope.currentSequenceIdx.$value = $scope.currentSequenceIdx.$value + 1;
+          $scope.currentSequenceIdx.$save()
+        }
+      } else {
+        console.log("Player chose " + color + "as the new color");
         $scope.simonSequence.$add({text: color})
           // display any errors
           .catch(alert).then(function() {
-            passTurn();
-          });
+          passTurn();
+        });
       }
     };
 
     function turnStart(){
       console.log("Player " + $scope.players[$scope.currentPlayerIdx] + " turn");
+
+      $scope.currentSequenceIdx.$value = 0;
+      $scope.currentSequenceIdx.$save();
+
       glowSequence();
     }
 
