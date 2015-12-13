@@ -23,5 +23,5 @@
 
 <p class="lead">Players:</p>
 <ul id="players" ng-show="players.length">
-  <li ng-repeat="player in players">{{player.uid}}</li>
+  <li ng-repeat="player in players" ng-class="{currentPlayer: $index==$parent.currentPlayerIdx.$value}">{{player.uid}}</li>
 </ul>
