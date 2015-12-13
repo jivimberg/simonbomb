@@ -8,7 +8,7 @@
  * Controller of the simonbombApp
  */
 angular.module('simonbombApp')
-  .controller('GameCtrl', function ($scope, Ref, Auth, $firebaseArray, $timeout) {
+  .controller('GameCtrl', function ($scope, Ref, Auth, $firebaseArray, $firebaseObject, $timeout) {
     // Set the timer
     Ref.child('.info/serverTimeOffset').on('value', function(snap) {
       myOffset = snap.val()||0;
@@ -21,6 +21,8 @@ angular.module('simonbombApp')
 
     $scope.players = $firebaseArray(Ref.child('players').limitToLast(20));
 
+    $scope.currentPlayerIdx = $firebaseObject(Ref.child('currentPlayerIdx'));
+
     // display any errors
     $scope.simonSequence.$loaded().catch(alert);
 
@@ -31,10 +33,20 @@ angular.module('simonbombApp')
         $scope.simonSequence.$add({text: color})
           // display any errors
           .catch(alert).then(function() {
+            passTurn();
             glowSequence();
           });
       }
     };
+
+    function passTurn() {
+      var nextIdx = $scope.currentPlayerIdx.$value + 1;
+      if (nextIdx >= $scope.players.length){
+        nextIdx = 0;
+      }
+      $scope.currentPlayerIdx.$value = nextIdx;
+      $scope.currentPlayerIdx.$save();
+    }
 
     function glowSequence(idx) {
       if(typeof idx == "undefined") {
@@ -76,6 +88,10 @@ angular.module('simonbombApp')
       }
 
     $scope.newGame = function() {
+      // reset players turn
+      $scope.currentPlayerIdx.$value = 0;
+      $scope.currentPlayerIdx.$save();
+
       // clean the sequence
       Ref.child('simonSequence').remove();
       Ref.child('endtime').set(now() + RESET_SECONDS * 1000);
