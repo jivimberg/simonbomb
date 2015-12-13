@@ -160,7 +160,12 @@ angular.module('simonbombApp')
     }
 
     function countDown() {
-      setTime(Math.max(0, endsAt - now()));
+      var remaining = Math.max(0, endsAt - now());
+      setTime(remaining);
+      if(timeout != null && remaining == 0){
+        window.alert("Times is up. Player " + $scope.players[$scope.currentPlayerIdx] + " loses");
+        Ref.child('running').set(false);
+      }
     }
 
     function setTime(remaining) {
