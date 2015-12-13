@@ -30,9 +30,9 @@ angular.module('simonbombApp')
         // push a message to the end of the array
         $scope.simonSequence.$add({text: color})
           // display any errors
-          .catch(alert);
-
-        glowSequence();
+          .catch(alert).then(function() {
+            glowSequence();
+          });
       }
     };
 
@@ -59,8 +59,8 @@ angular.module('simonbombApp')
           width: '+=15px'
         }, "slow",
         function() {
-          console.log(color + " back to normal");
           setTimeout(function() {
+            console.log(color + " back to normal");
             btn.animate(
               {
                 "background-color": originalBackgroundColor,
@@ -69,7 +69,6 @@ angular.module('simonbombApp')
                 width: '-=50px'
               }, "slow",
               function () {
-                  console.log("Next color");
                   glowSequence(++idx);
                 });
           }, 500);
@@ -146,7 +145,7 @@ angular.module('simonbombApp')
 
     var colorMap = {
       "Green": { baseClass: "btn-success", brightColor:"#00ff00"},
-      "LightBlue": { baseClass: "btn-info", brightColor:"#0000ff"},
+      "Blue": { baseClass: "btn-info", brightColor:"#0000ff"},
       "Yellow": { baseClass: "btn-warning", brightColor:"#ff6600"},
       "Red": { baseClass: "btn-danger", brightColor:"#ff0000"}
     }
