@@ -15,6 +15,7 @@ angular.module('simonbombApp')
     });
     Ref.child('running').on('value', toggleRunning);
     Ref.child('endtime').on('value', updateEndTime);
+    Ref.child('currentPlayerIdx').on('value', turnStart);
 
     // synchronize a read-only, synchronized array of colors, limit to most recent 100
     $scope.simonSequence = $firebaseArray(Ref.child('simonSequence').limitToLast(100));
@@ -22,12 +23,6 @@ angular.module('simonbombApp')
     $scope.players = $firebaseArray(Ref.child('players').limitToLast(20));
 
     $scope.currentPlayerIdx = $firebaseObject(Ref.child('currentPlayerIdx'));
-
-    $scope.currentPlayerIdx.$watch(function() {
-      console.log("Player " + $scope.players[$scope.currentPlayerIdx] + " turn");
-      glowSequence();
-    });
-
 
     // display any errors
     $scope.simonSequence.$loaded().catch(alert);
@@ -43,6 +38,11 @@ angular.module('simonbombApp')
           });
       }
     };
+
+    function turnStart(){
+      console.log("Player " + $scope.players[$scope.currentPlayerIdx] + " turn");
+      glowSequence();
+    }
 
     function passTurn() {
       var nextIdx = $scope.currentPlayerIdx.$value + 1;
