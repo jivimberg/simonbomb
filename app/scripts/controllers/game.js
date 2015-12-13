@@ -82,12 +82,18 @@ angular.module('simonbombApp')
       Ref.child('running').set(true);
     };
 
+    /***** Players *********/
     $scope.loginNewPlayer = function () {
       Auth.$authAnonymously({rememberMe: "sessionOnly"})
         .then(function(authData) {
           console.log("Authenticated successfully with payload:", authData);
           $scope.players.$add({uid: authData.uid})
         });
+    };
+
+    $scope.kickAllPlayers = function () {
+      Auth.$unauth();
+      Ref.child('players').remove();
     };
 
     function alert(msg) {
