@@ -23,6 +23,12 @@ angular.module('simonbombApp')
 
     $scope.currentPlayerIdx = $firebaseObject(Ref.child('currentPlayerIdx'));
 
+    $scope.currentPlayerIdx.$watch(function() {
+      console.log("Player " + $scope.players[$scope.currentPlayerIdx] + " turn");
+      glowSequence();
+    });
+
+
     // display any errors
     $scope.simonSequence.$loaded().catch(alert);
 
@@ -34,7 +40,6 @@ angular.module('simonbombApp')
           // display any errors
           .catch(alert).then(function() {
             passTurn();
-            glowSequence();
           });
       }
     };
