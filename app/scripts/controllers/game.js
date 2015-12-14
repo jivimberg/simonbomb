@@ -122,7 +122,10 @@ angular.module('simonbombApp')
       Auth.$authAnonymously({rememberMe: "sessionOnly"})
         .then(function(authData) {
           console.log("Authenticated successfully with payload:", authData);
-          $scope.players.$add({uid: authData.uid})
+          $scope.players.$add({uid: authData.uid}).then(function(ref) {
+            var refId = ref.key();
+            Ref.child("players/" + refId).onDisconnect().remove();
+          });
         });
     };
 
