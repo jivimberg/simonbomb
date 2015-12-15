@@ -15,7 +15,6 @@ angular.module('simonbombApp')
     });
     Ref.child('running').on('value', toggleRunning);
     Ref.child('endtime').on('value', updateEndTime);
-    Ref.child('currentPlayerIdx').on('value', turnStart);
 
     // synchronize a read-only, synchronized array of colors, limit to most recent 100
     $scope.simonSequence = $firebaseArray(Ref.child('simonSequence').limitToLast(100));
@@ -23,12 +22,17 @@ angular.module('simonbombApp')
     $scope.players = $firebaseArray(Ref.child('players').limitToLast(20));
 
     $scope.currentPlayerIdx = $firebaseObject(Ref.child('currentPlayerIdx'));
+    var unwatch = $scope.currentPlayerIdx.$watch(function() {
+      turnStart();
+    });
+
     $scope.currentSequenceIdx = $firebaseObject(Ref.child('currentSequenceIdx'));
 
     // display any errors
     $scope.simonSequence.$loaded().catch(alert);
     $scope.players.$loaded().catch(alert);
     $scope.currentPlayerIdx.$loaded().catch(alert);
+    var playerRefId;
 
     // provide a method for adding a message
     $scope.pickColor = function(color) {
@@ -40,7 +44,7 @@ angular.module('simonbombApp')
           $scope.currentSequenceIdx.$save()
         }
       } else {
-        console.log("Player chose " + color + "as the new color");
+        console.log("Player chose " + color + " as the new color");
         $scope.simonSequence.$add({text: color})
           // display any errors
           .catch(alert).then(function() {
@@ -50,7 +54,15 @@ angular.module('simonbombApp')
     };
 
     function turnStart(){
-      console.log("Player " + $scope.players[$scope.currentPlayerIdx] + " turn");
+      var player = $scope.players[$scope.currentPlayerIdx.$value];
+      console.log("Player " + player + " turn");
+      if(player.$id == playerRefId){
+        //my turn! enable buttons
+        console.log("it's my turn");
+        $scope.isMyTurn = true;
+      } else {
+        $scope.isMyTurn = false;
+      }
 
       $scope.currentSequenceIdx.$value = 0;
       $scope.currentSequenceIdx.$save();
@@ -107,14 +119,16 @@ angular.module('simonbombApp')
       }
 
     $scope.newGame = function() {
+      // clean the sequence
+      Ref.child('simonSequence').remove();
+      // start the timer
+      Ref.child('endtime').set(now() + RESET_SECONDS * 1000);
+      Ref.child('running').set(true);
+
       // reset players turn
       $scope.currentPlayerIdx.$value = 0;
       $scope.currentPlayerIdx.$save();
-
-      // clean the sequence
-      Ref.child('simonSequence').remove();
-      Ref.child('endtime').set(now() + RESET_SECONDS * 1000);
-      Ref.child('running').set(true);
+      // when updating the currentPlayerIdx the turn will start
     };
 
     /***** Players *********/
@@ -123,8 +137,8 @@ angular.module('simonbombApp')
         .then(function(authData) {
           console.log("Authenticated successfully with payload:", authData);
           $scope.players.$add({uid: authData.uid}).then(function(ref) {
-            var refId = ref.key();
-            Ref.child("players/" + refId).onDisconnect().remove();
+            playerRefId = ref.key();
+            Ref.child("players/" + playerRefId).onDisconnect().remove();
           });
         });
     };

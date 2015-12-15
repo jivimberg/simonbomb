@@ -1,6 +1,6 @@
 <p>
   <button  class="btn btn-lg btn-primary" ng-click="loginNewPlayer()">I want to play!</button>
-  <button  class="btn btn-lg btn-primary" ng-click="newGame()">New game</button>
+  <button  class="btn btn-lg btn-primary" ng-click="newGame()" ng-disabled="players.length < 2">New game</button>
   <button  class="btn btn-lg btn-primary" ng-click="kickAllPlayers()">Kick all players</button>
 </p>
 <div class="jumbotron">
@@ -9,10 +9,10 @@
     <img src="images/yeoman.png" alt="I'm Yeoman"><br>
     How many can you remember?
   </p>
-  <p><a class="btn btn-lg btn-success"  ng-click="pickColor('Green');">Green</a></p>
-  <p><a class="btn btn-lg btn-info" ng-click="pickColor('Blue');">Blue</a></p>
-  <p><a class="btn btn-lg btn-warning" ng-click="pickColor('Yellow');">Yellow</a></p>
-  <p><a class="btn btn-lg btn-danger" ng-click="pickColor('Red');">Red</a></p>
+  <p><button class="btn btn-lg btn-success" ng-click="pickColor('Green');" ng-disabled="!isMyTurn">Green</button></p>
+  <p><button class="btn btn-lg btn-info" ng-click="pickColor('Blue');" ng-disabled="!isMyTurn">Blue</button></p>
+  <p><button class="btn btn-lg btn-warning" ng-click="pickColor('Yellow');" ng-disabled="!isMyTurn">Yellow</button></p>
+  <p><button class="btn btn-lg btn-danger" ng-click="pickColor('Red');" ng-disabled="!isMyTurn">Red</button></p>
 
   <div id="timer">00:00</div>
 </div>
