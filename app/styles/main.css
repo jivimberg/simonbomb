@@ -62,7 +62,15 @@ body {
 /**** Jivi zone ****/
 .btn {
   vertical-align: middle;
-  display: table-cell;
+}
+
+#logo{
+  width: 96px;
+}
+
+.simon-btn {
+  height: 150px;
+  width: 100%;
 }
 
 .currentPlayer {
