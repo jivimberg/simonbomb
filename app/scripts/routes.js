@@ -61,7 +61,10 @@ angular.module('simonbombApp')
         templateUrl: 'views/main.html',
         controller: 'GameCtrl'
       })
-
+      .when('/:admin', {
+        templateUrl: 'views/main.html',
+        controller: 'GameCtrl'
+      })
       .when('/chat', {
         templateUrl: 'views/chat.html',
         controller: 'ChatCtrl'

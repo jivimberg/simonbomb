@@ -8,12 +8,15 @@
  * Controller of the simonbombApp
  */
 angular.module('simonbombApp')
-  .controller('GameCtrl', function ($scope, Ref, Auth, $firebaseArray, $firebaseObject, $timeout) {
+  .controller('GameCtrl', function ($scope, Ref, Auth, $firebaseArray, $firebaseObject, $timeout, $routeParams) {
     // Set the timer
     Ref.child('.info/serverTimeOffset').on('value', function(snap) {
       myOffset = snap.val()||0;
     });
     Ref.child('endtime').on('value', updateEndTime);
+
+    // enable admin view
+    $scope.isAdmin = $routeParams.admin == "admin";
 
     // synchronize a read-only, synchronized array of colors, limit to most recent 100
     $scope.simonSequence = $firebaseArray(Ref.child('simonSequence').limitToLast(100));

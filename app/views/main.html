@@ -1,7 +1,7 @@
 <p>
   <button  class="btn btn-lg btn-primary" ng-click="loginNewPlayer()">I want to play!</button>
   <button  class="btn btn-lg btn-primary" ng-click="newGame()" ng-disabled="players.length < 2">New game</button>
-  <button  class="btn btn-lg btn-primary" ng-click="kickAllPlayers()">Kick all players</button>
+  <button  class="btn btn-lg btn-primary" ng-show="isAdmin" ng-click="kickAllPlayers()">Kick all players</button>
 </p>
 <div class="jumbotron">
   <h1>Simon Bomb!</h1>
@@ -17,15 +17,19 @@
     <p><button class="btn btn-lg btn-warning simon-btn" ng-click="pickColor('Yellow');" ng-disabled="!isMyTurn">Yellow</button></p>
     <p><button class="btn btn-lg btn-info simon-btn" ng-click="pickColor('Blue');" ng-disabled="!isMyTurn">Blue</button></p>
   </div>
-
-  <div id="timer">00:00</div>
 </div>
 
-<ul id="colors" ng-show="simonSequence.length">
-  <li ng-repeat="color in simonSequence">{{color.text}}</li>
-</ul>
+<div ng-show="isAdmin">
+  <h1 id="timer">00:00</h1>
 
-<p class="lead">Players:</p>
-<ul id="players" ng-show="players.length">
-  <li ng-repeat="player in players" ng-class="{currentPlayer: $index==$parent.currentPlayerIdx.$value}">{{player.uid}}</li>
-</ul>
+  <p class="lead">Color sequence:</p>
+  <ul id="colors" ng-show="simonSequence.length">
+    <li ng-repeat="color in simonSequence">{{color.text}}</li>
+  </ul>
+
+  <p class="lead">Players:</p>
+  <ul id="players" ng-show="players.length">
+    <li ng-repeat="player in players" ng-class="{currentPlayer: $index==$parent.currentPlayerIdx.$value}">{{player.uid}}</li>
+  </ul>
+
+</div>
