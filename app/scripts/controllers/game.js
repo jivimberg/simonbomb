@@ -13,7 +13,6 @@ angular.module('simonbombApp')
     Ref.child('.info/serverTimeOffset').on('value', function(snap) {
       myOffset = snap.val()||0;
     });
-    Ref.child('running').on('value', toggleRunning);
     Ref.child('endtime').on('value', updateEndTime);
 
     // synchronize a read-only, synchronized array of colors, limit to most recent 100
@@ -21,9 +20,16 @@ angular.module('simonbombApp')
 
     $scope.players = $firebaseArray(Ref.child('players').limitToLast(20));
 
+    $scope.running = $firebaseObject(Ref.child('running'));
+    $scope.running.$watch(function() {
+      toggleRunning();
+    });
+
     $scope.currentPlayerIdx = $firebaseObject(Ref.child('currentPlayerIdx'));
-    var unwatch = $scope.currentPlayerIdx.$watch(function() {
-      turnStart();
+    $scope.currentPlayerIdx.$watch(function() {
+      if($scope.running.$value){
+        turnStart();
+      }
     });
 
     $scope.currentSequenceIdx = $firebaseObject(Ref.child('currentSequenceIdx'));
@@ -123,7 +129,8 @@ angular.module('simonbombApp')
       Ref.child('simonSequence').remove();
       // start the timer
       Ref.child('endtime').set(now() + RESET_SECONDS * 1000);
-      Ref.child('running').set(true);
+      $scope.running.$value = true;
+      $scope.running.$save();
 
       // reset players turn
       $scope.currentPlayerIdx.$value = 0;
@@ -160,8 +167,8 @@ angular.module('simonbombApp')
     var RESET_SECONDS = 60;
     var myOffset = 0;
 
-    function toggleRunning(snap) {
-      var b = !! snap.val();
+    function toggleRunning() {
+      var b = !! $scope.running.$value;
       if (b) {
         countDown();
         timeout = setInterval(countDown, 1000);
@@ -181,7 +188,8 @@ angular.module('simonbombApp')
       setTime(remaining);
       if(timeout != null && remaining == 0){
         window.alert("Times is up. Player " + $scope.players[$scope.currentPlayerIdx] + " loses");
-        Ref.child('running').set(false);
+        $scope.running.$value = false;
+        $scope.running.$save();
       }
     }
 
