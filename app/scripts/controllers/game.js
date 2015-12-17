@@ -45,6 +45,7 @@ angular.module('simonbombApp')
       if($scope.currentSequenceIdx.$value < $scope.simonSequence.length) {
         if($scope.simonSequence[$scope.currentSequenceIdx.$value].text != color){
           window.alert("WRONG! Game over");
+          endGame();
         } else {
           $scope.currentSequenceIdx.$value = $scope.currentSequenceIdx.$value + 1;
           $scope.currentSequenceIdx.$save()
@@ -104,8 +105,8 @@ angular.module('simonbombApp')
         {
           "background-color": colorEntry.brightColor,
           "border-color": colorEntry.brightColor,
-          height: '+=15px',
-          width: '+=15px'
+          height: '+=5px',
+          width: '+=5px'
         }, "slow",
         function() {
           setTimeout(function() {
@@ -114,8 +115,8 @@ angular.module('simonbombApp')
               {
                 "background-color": originalBackgroundColor,
                 "border-color": originalBorderColor,
-                height: '-=50px',
-                width: '-=50px'
+                height: '-=5px',
+                width: '-=5px'
               }, "slow",
               function () {
                   glowSequence(++idx);
@@ -137,6 +138,20 @@ angular.module('simonbombApp')
       $scope.currentPlayerIdx.$save();
       // when updating the currentPlayerIdx the turn will start
     };
+
+    function endGame() {
+      // clean the sequence
+      Ref.child('simonSequence').remove();
+
+      $scope.running.$value = false;
+      $scope.running.$save().then(function() {
+        Ref.child('endtime').set(now() + RESET_SECONDS * 1000);
+      });
+
+      // reset players turn
+      $scope.currentPlayerIdx.$remove();
+      $scope.currentSequenceIdx.$remove();
+    }
 
     /***** Players *********/
     $scope.loginNewPlayer = function () {
