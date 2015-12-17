@@ -151,6 +151,7 @@ angular.module('simonbombApp')
       // reset players turn
       $scope.currentPlayerIdx.$remove();
       $scope.currentSequenceIdx.$remove();
+      $scope.isMyTurn = false;
     }
 
     /***** Players *********/
@@ -203,8 +204,7 @@ angular.module('simonbombApp')
       setTime(remaining);
       if(timeout != null && remaining == 0){
         window.alert("Times is up. Player " + $scope.players[$scope.currentPlayerIdx] + " loses");
-        $scope.running.$value = false;
-        $scope.running.$save();
+        endGame();
       }
     }
 
