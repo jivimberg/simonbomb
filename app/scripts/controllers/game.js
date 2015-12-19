@@ -28,6 +28,8 @@ angular.module('simonbombApp')
       toggleRunning();
     });
 
+    $scope.gameState = $firebaseObject(Ref.child('gameState'));
+
     $scope.currentPlayerIdx = $firebaseObject(Ref.child('currentPlayerIdx'));
     $scope.currentPlayerIdx.$watch(function() {
       if($scope.running.$value){
@@ -47,7 +49,6 @@ angular.module('simonbombApp')
     $scope.pickColor = function(color) {
       if($scope.currentSequenceIdx.$value < $scope.simonSequence.length) {
         if($scope.simonSequence[$scope.currentSequenceIdx.$value].text != color){
-          window.alert("WRONG! Game over");
           endGame();
         } else {
           $scope.currentSequenceIdx.$value = $scope.currentSequenceIdx.$value + 1;
@@ -136,6 +137,9 @@ angular.module('simonbombApp')
       $scope.running.$value = true;
       $scope.running.$save();
 
+      $scope.gameState.$value = "playing";
+      $scope.gameState.$save();
+
       // reset players turn
       $scope.currentPlayerIdx.$value = 0;
       $scope.currentPlayerIdx.$save();
@@ -143,6 +147,9 @@ angular.module('simonbombApp')
     };
 
     function endGame() {
+      $scope.gameState.$value = "game-over";
+      $scope.gameState.$save();
+
       // clean the sequence
       Ref.child('simonSequence').remove();
 
@@ -183,7 +190,7 @@ angular.module('simonbombApp')
 
     /***** TIMER FUNCTIONS *********/
     var endsAt = 0, timeout;
-    var RESET_SECONDS = 60;
+    var RESET_SECONDS = 5 * 60;
     var myOffset = 0;
 
     function toggleRunning() {
@@ -205,8 +212,7 @@ angular.module('simonbombApp')
     function countDown() {
       var remaining = Math.max(0, endsAt - now());
       setTime(remaining);
-      if(timeout != null && remaining == 0){
-        window.alert("Times is up. Player " + $scope.players[$scope.currentPlayerIdx] + " loses");
+      if(timeout != null && remaining == 0){  
         endGame();
       }
     }
