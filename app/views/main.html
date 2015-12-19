@@ -3,17 +3,17 @@
   <button  class="btn btn-lg btn-primary" ng-click="newGame()" ng-disabled="players.length < 2">New game</button>
   <button  class="btn btn-lg btn-primary" ng-show="isAdmin" ng-click="kickAllPlayers()">Kick all players</button>
 </p>
-<div class="jumbotron">
+<div class="jumbotron container">
   <h1>Simon Bomb!</h1>
   <p class="lead">
     <img id="logo" src="images/logo.svg" alt="Simon Bomb"><br>
     How many can you remember?
   </p>
-  <div class="col-sm-6">
+  <div class="col-xs-6">
     <p><button class="btn btn-lg btn-success simon-btn" ng-click="pickColor('Green');" ng-disabled="!isMyTurn">Green</button></p>
     <p><button class="btn btn-lg btn-danger simon-btn" ng-click="pickColor('Red');" ng-disabled="!isMyTurn">Red</button></p>
   </div>
-  <div class="col-sm-6">
+  <div class="col-xs-6">
     <p><button class="btn btn-lg btn-warning simon-btn" ng-click="pickColor('Yellow');" ng-disabled="!isMyTurn">Yellow</button></p>
     <p><button class="btn btn-lg btn-info simon-btn" ng-click="pickColor('Blue');" ng-disabled="!isMyTurn">Blue</button></p>
   </div>
