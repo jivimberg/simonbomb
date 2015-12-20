@@ -101,7 +101,7 @@ angular.module('simonbombApp')
 
       var color = $scope.simonSequence[idx].text;
       console.log("Make: " + color + " shine");
-      var colorEntry = colorMap[color];
+      var colorEntry = COLOR_MAP[color];
       var btn = $("." + colorEntry.baseClass);
       var originalBackgroundColor = btn.css("background-color");
       var originalBorderColor = btn.css("border-color");
@@ -169,7 +169,7 @@ angular.module('simonbombApp')
       Auth.$authAnonymously({rememberMe: "sessionOnly"})
         .then(function(authData) {
           console.log("Authenticated successfully with payload:", authData);
-          $scope.players.$add({uid: authData.uid}).then(function(ref) {
+          $scope.players.$add({uid: authData.uid, image: randomAnimal.image}).then(function(ref) {
             playerRefId = ref.key();
             Ref.child("players/" + playerRefId).onDisconnect().remove();
           });
@@ -212,7 +212,7 @@ angular.module('simonbombApp')
     function countDown() {
       var remaining = Math.max(0, endsAt - now());
       setTime(remaining);
-      if(timeout != null && remaining == 0){  
+      if(timeout != null && remaining == 0){
         endGame();
       }
     }
@@ -238,11 +238,40 @@ angular.module('simonbombApp')
       }
     }
 
-    var colorMap = {
+    var COLOR_MAP = {
       "Green": { baseClass: "btn-success", brightColor:"#00ff00"},
       "Blue": { baseClass: "btn-info", brightColor:"#0000ff"},
       "Yellow": { baseClass: "btn-warning", brightColor:"#ff6600"},
       "Red": { baseClass: "btn-danger", brightColor:"#ff0000"}
-    }
+    };
+
+    var ANIMAL_ARRAY = [
+      { image: "bear.svg"},
+      { image: "bear2.svg"},
+      { image: "bull.svg"},
+      { image: "camel.svg"},
+      { image: "chimp.svg"},
+      { image: "cow.svg"},
+      { image: "cow2.svg"},
+      { image: "dog.svg"},
+      { image: "dog2.svg"},
+      { image: "dog3.svg"},
+      { image: "fox.svg"},
+      { image: "frog.svg"},
+      { image: "giraffe.svg"},
+      { image: "goat.svg"},
+      { image: "lion.svg"},
+      { image: "owl.svg"},
+      { image: "panda.svg"},
+      { image: "pig.svg"},
+      { image: "pig2t.svg"},
+      { image: "sea.svg"},
+      { image: "sheep.svg"},
+      { image: "skunk.svg"},
+      { image: "wild.svg"},
+      { image: "zebra.svg"}
+    ];
+
+    var randomAnimal = ANIMAL_ARRAY[Math.floor(Math.random() * ANIMAL_ARRAY.length)];
 
   });
