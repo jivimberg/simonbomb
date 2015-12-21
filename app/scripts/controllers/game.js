@@ -22,6 +22,11 @@ angular.module('simonbombApp')
     $scope.simonSequence = $firebaseArray(Ref.child('simonSequence').limitToLast(100));
 
     $scope.players = $firebaseArray(Ref.child('players').limitToLast(20));
+    $scope.players.$loaded().then(function(){
+      if($scope.players.length === 0) {
+        $scope.gameState.$remove();
+      }
+    });
 
     $scope.running = $firebaseObject(Ref.child('running'));
     $scope.running.$watch(function() {
@@ -165,11 +170,10 @@ angular.module('simonbombApp')
 
     /***** Players *********/
     $scope.loginNewPlayer = function () {
-      Auth.$authAnonymously()
+      Auth.$authAnonymously({rememberMe: "sessionOnly"})
         .then(function(authData) {
           console.log("Authenticated successfully with payload:", authData);
           $scope.players.$add({uid: authData.uid, image: randomAnimal.image}).then(function(ref) {
-            Auth.$unauth();
             $scope.playerRefId = ref.key();
             Ref.child("players/" + $scope.playerRefId).onDisconnect().remove();
           });
