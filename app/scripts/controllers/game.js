@@ -43,7 +43,6 @@ angular.module('simonbombApp')
     $scope.simonSequence.$loaded().catch(alert);
     $scope.players.$loaded().catch(alert);
     $scope.currentPlayerIdx.$loaded().catch(alert);
-    var playerRefId;
 
     // provide a method for adding a message
     $scope.pickColor = function(color) {
@@ -67,7 +66,7 @@ angular.module('simonbombApp')
     function turnStart(){
       var player = $scope.players[$scope.currentPlayerIdx.$value];
       console.log("Player " + player + " turn");
-      if(player.$id == playerRefId){
+      if(player.$id == $scope.playerRefId){
         //my turn! enable buttons
         console.log("it's my turn");
         $scope.isMyTurn = true;
@@ -166,12 +165,13 @@ angular.module('simonbombApp')
 
     /***** Players *********/
     $scope.loginNewPlayer = function () {
-      Auth.$authAnonymously({rememberMe: "sessionOnly"})
+      Auth.$authAnonymously()
         .then(function(authData) {
           console.log("Authenticated successfully with payload:", authData);
           $scope.players.$add({uid: authData.uid, image: randomAnimal.image}).then(function(ref) {
-            playerRefId = ref.key();
-            Ref.child("players/" + playerRefId).onDisconnect().remove();
+            Auth.$unauth();
+            $scope.playerRefId = ref.key();
+            Ref.child("players/" + $scope.playerRefId).onDisconnect().remove();
           });
         });
     };

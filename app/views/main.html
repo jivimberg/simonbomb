@@ -1,6 +1,6 @@
 <p>
-  <button  class="btn btn-lg btn-primary" ng-click="loginNewPlayer()">I want to play!</button>
-  <button  class="btn btn-lg btn-primary" ng-click="newGame()" ng-disabled="players.length < 2">New game</button>
+  <button  class="btn btn-lg btn-primary" ng-click="loginNewPlayer()" ng-show="playerRefId === undefined">I want to play!</button>
+  <button  class="btn btn-lg btn-primary" ng-click="newGame()" ng-show="playerRefId != undefined" ng-disabled="players.length < 2">New game</button>
   <button  class="btn btn-lg btn-primary" ng-show="isAdmin" ng-click="kickAllPlayers()">Kick all players</button>
 </p>
 
