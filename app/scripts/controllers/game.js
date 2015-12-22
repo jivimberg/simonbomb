@@ -16,7 +16,7 @@ angular.module('simonbombApp')
     Ref.child('endtime').on('value', updateEndTime);
 
     // enable admin view
-    $scope.isAdmin = $routeParams.admin == "admin";
+    $scope.isAdmin = $routeParams.admin === 'admin';
 
     // synchronize a read-only, synchronized array of colors, limit to most recent 100
     $scope.simonSequence = $firebaseArray(Ref.child('simonSequence').limitToLast(100));
@@ -52,14 +52,14 @@ angular.module('simonbombApp')
     // provide a method for adding a message
     $scope.pickColor = function(color) {
       if($scope.currentSequenceIdx.$value < $scope.simonSequence.length) {
-        if($scope.simonSequence[$scope.currentSequenceIdx.$value].text != color){
+        if($scope.simonSequence[$scope.currentSequenceIdx.$value].text !== color){
           endGame();
         } else {
           $scope.currentSequenceIdx.$value = $scope.currentSequenceIdx.$value + 1;
-          $scope.currentSequenceIdx.$save()
+          $scope.currentSequenceIdx.$save();
         }
       } else {
-        console.log("Player chose " + color + " as the new color");
+        console.log('Player chose ' + color + ' as the new color');
         $scope.simonSequence.$add({text: color})
           // display any errors
           .catch(alert).then(function() {
@@ -70,10 +70,10 @@ angular.module('simonbombApp')
 
     function turnStart(){
       var player = $scope.players[$scope.currentPlayerIdx.$value];
-      console.log("Player " + player + " turn");
-      if(player.$id == $scope.playerRefId){
+      console.log('Player ' + player + ' turn');
+      if(player.$id === $scope.playerRefId){
         //my turn! enable buttons
-        console.log("it's my turn");
+        console.log('it\'s my turn');
         $scope.isMyTurn = true;
       } else {
         $scope.isMyTurn = false;
@@ -95,7 +95,7 @@ angular.module('simonbombApp')
     }
 
     function glowSequence(idx) {
-      if(typeof idx == "undefined") {
+      if(typeof idx === 'undefined') {
         idx = 0;
       }
 
@@ -104,28 +104,28 @@ angular.module('simonbombApp')
       }
 
       var color = $scope.simonSequence[idx].text;
-      console.log("Make: " + color + " shine");
+      console.log('Make: ' + color + ' shine');
       var colorEntry = COLOR_MAP[color];
-      var btn = $("." + colorEntry.baseClass);
-      var originalBackgroundColor = btn.css("background-color");
-      var originalBorderColor = btn.css("border-color");
+      var btn = $('.' + colorEntry.baseClass);
+      var originalBackgroundColor = btn.css('background-color');
+      var originalBorderColor = btn.css('border-color');
       btn.animate(
         {
-          "background-color": colorEntry.brightColor,
-          "border-color": colorEntry.brightColor,
+          'background-color': colorEntry.brightColor,
+          'border-color': colorEntry.brightColor,
           height: '+=5px',
           width: '+=5px'
-        }, "slow",
+        }, 'slow',
         function() {
           setTimeout(function() {
-            console.log(color + " back to normal");
+            console.log(color + ' back to normal');
             btn.animate(
               {
-                "background-color": originalBackgroundColor,
-                "border-color": originalBorderColor,
+                'background-color': originalBackgroundColor,
+                'border-color': originalBorderColor,
                 height: '-=5px',
                 width: '-=5px'
-              }, "slow",
+              }, 'slow',
               function () {
                   glowSequence(++idx);
                 });
@@ -141,7 +141,7 @@ angular.module('simonbombApp')
       $scope.running.$value = true;
       $scope.running.$save();
 
-      $scope.gameState.$value = "playing";
+      $scope.gameState.$value = 'playing';
       $scope.gameState.$save();
 
       // reset players turn
@@ -151,7 +151,7 @@ angular.module('simonbombApp')
     };
 
     function endGame() {
-      $scope.gameState.$value = "game-over";
+      $scope.gameState.$value = 'game-over';
       $scope.gameState.$save();
 
       // clean the sequence
@@ -170,12 +170,12 @@ angular.module('simonbombApp')
 
     /***** Players *********/
     $scope.loginNewPlayer = function () {
-      Auth.$authAnonymously({rememberMe: "sessionOnly"})
+      Auth.$authAnonymously({rememberMe: 'sessionOnly'})
         .then(function(authData) {
-          console.log("Authenticated successfully with payload:", authData);
+          console.log('Authenticated successfully with payload:', authData);
           $scope.players.$add({uid: authData.uid, image: randomAnimal.image}).then(function(ref) {
             $scope.playerRefId = ref.key();
-            Ref.child("players/" + $scope.playerRefId).onDisconnect().remove();
+            Ref.child('players/' + $scope.playerRefId).onDisconnect().remove();
           });
         });
     };
@@ -216,7 +216,7 @@ angular.module('simonbombApp')
     function countDown() {
       var remaining = Math.max(0, endsAt - now());
       setTime(remaining);
-      if(timeout != null && remaining == 0){
+      if(timeout !== null && remaining === 0){
         endGame();
       }
     }
@@ -243,37 +243,37 @@ angular.module('simonbombApp')
     }
 
     var COLOR_MAP = {
-      "Green": { baseClass: "btn-success", brightColor:"#00ff00"},
-      "Blue": { baseClass: "btn-info", brightColor:"#0000ff"},
-      "Yellow": { baseClass: "btn-warning", brightColor:"#ff6600"},
-      "Red": { baseClass: "btn-danger", brightColor:"#ff0000"}
+      'Green': { baseClass: 'btn-success', brightColor:'#00ff00'},
+      'Blue': { baseClass: 'btn-info', brightColor:'#0000ff'},
+      'Yellow': { baseClass: 'btn-warning', brightColor:'#ff6600'},
+      'Red': { baseClass: 'btn-danger', brightColor:'#ff0000'}
     };
 
     var ANIMAL_ARRAY = [
-      { image: "bear.svg"},
-      { image: "bear2.svg"},
-      { image: "bull.svg"},
-      { image: "camel.svg"},
-      { image: "chimp.svg"},
-      { image: "cow.svg"},
-      { image: "cow2.svg"},
-      { image: "dog.svg"},
-      { image: "dog2.svg"},
-      { image: "dog3.svg"},
-      { image: "fox.svg"},
-      { image: "frog.svg"},
-      { image: "giraffe.svg"},
-      { image: "goat.svg"},
-      { image: "lion.svg"},
-      { image: "owl.svg"},
-      { image: "panda.svg"},
-      { image: "pig.svg"},
-      { image: "pig2t.svg"},
-      { image: "sea.svg"},
-      { image: "sheep.svg"},
-      { image: "skunk.svg"},
-      { image: "wild.svg"},
-      { image: "zebra.svg"}
+      { image: 'bear.svg'},
+      { image: 'bear2.svg'},
+      { image: 'bull.svg'},
+      { image: 'camel.svg'},
+      { image: 'chimp.svg'},
+      { image: 'cow.svg'},
+      { image: 'cow2.svg'},
+      { image: 'dog.svg'},
+      { image: 'dog2.svg'},
+      { image: 'dog3.svg'},
+      { image: 'fox.svg'},
+      { image: 'frog.svg'},
+      { image: 'giraffe.svg'},
+      { image: 'goat.svg'},
+      { image: 'lion.svg'},
+      { image: 'owl.svg'},
+      { image: 'panda.svg'},
+      { image: 'pig.svg'},
+      { image: 'pig2t.svg'},
+      { image: 'sea.svg'},
+      { image: 'sheep.svg'},
+      { image: 'skunk.svg'},
+      { image: 'wild.svg'},
+      { image: 'zebra.svg'}
     ];
 
     var randomAnimal = ANIMAL_ARRAY[Math.floor(Math.random() * ANIMAL_ARRAY.length)];
