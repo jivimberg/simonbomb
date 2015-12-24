@@ -28,6 +28,8 @@ angular.module('simonbombApp')
       }
     });
 
+    $scope.playing = $firebaseArray(Ref.child('playing').limitToLast(20));
+
     $scope.running = $firebaseObject(Ref.child('running'));
     $scope.running.$watch(function() {
       toggleRunning();
@@ -49,11 +51,11 @@ angular.module('simonbombApp')
     $scope.players.$loaded().catch(alert);
     $scope.currentPlayerIdx.$loaded().catch(alert);
 
-    // provide a method for adding a message
     $scope.pickColor = function(color) {
       if($scope.currentSequenceIdx.$value < $scope.simonSequence.length) {
         if($scope.simonSequence[$scope.currentSequenceIdx.$value].text !== color){
-          endGame();
+          pickMistake();
+          passTurn();
         } else {
           $scope.currentSequenceIdx.$value = $scope.currentSequenceIdx.$value + 1;
           $scope.currentSequenceIdx.$save();
@@ -68,8 +70,22 @@ angular.module('simonbombApp')
       }
     };
 
+    function pickMistake() {
+      var player = $scope.players.$getRecord($scope.playing[$scope.currentPlayerIdx.$value].$value);
+
+      $scope.playing.forEach(function (elem){
+        if(elem.$value === player.$id){
+          $scope.playing.$remove(elem).then(function() {
+            if($scope.playing.length < 2) {
+              endGame();
+            }
+          });
+        }
+      });
+    }
+
     function turnStart(){
-      var player = $scope.players[$scope.currentPlayerIdx.$value];
+      var player = $scope.players.$getRecord($scope.playing[$scope.currentPlayerIdx.$value].$value);
       console.log('Player ' + player + ' turn');
       if(player.$id === $scope.playerRefId){
         //my turn! enable buttons
@@ -87,7 +103,7 @@ angular.module('simonbombApp')
 
     function passTurn() {
       var nextIdx = $scope.currentPlayerIdx.$value + 1;
-      if (nextIdx >= $scope.players.length){
+      if (nextIdx >= $scope.playing.length){
         nextIdx = 0;
       }
       $scope.currentPlayerIdx.$value = nextIdx;
@@ -134,6 +150,11 @@ angular.module('simonbombApp')
       }
 
     $scope.newGame = function() {
+      Ref.child('playing').remove();
+      $scope.players.forEach(function(player) {
+        $scope.playing.$add(player.$id);
+      });
+
       // clean the sequence
       Ref.child('simonSequence').remove();
       // start the timer
@@ -173,7 +194,7 @@ angular.module('simonbombApp')
       Auth.$authAnonymously({rememberMe: 'sessionOnly'})
         .then(function(authData) {
           console.log('Authenticated successfully with payload:', authData);
-          $scope.players.$add({uid: authData.uid, image: randomAnimal.image}).then(function(ref) {
+          $scope.players.$add({uid: authData.uid, image: randomAnimal.image }).then(function(ref) {
             $scope.playerRefId = ref.key();
             Ref.child('players/' + $scope.playerRefId).onDisconnect().remove();
           });

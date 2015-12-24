@@ -31,6 +31,7 @@
     </div>
     <div ng-show="gameState.$value == 'game-over'">
       <h1>GAME OVER</h1>
+      <h2>Player {{ players.$getRecord(playing[0].$value).image }} wins!</h2>
     </div>
   </div>
 
