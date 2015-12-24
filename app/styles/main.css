@@ -73,6 +73,30 @@ body {
   width: 100%;
 }
 
+#player-tabs {
+  border-bottom: 0;
+}
+
+.nav-tabs > li.active > a.my-turn {
+  background-color: #d9d9d9;
+  border-bottom: 1px solid #d9d9d9;
+}
+
+.nav-tabs > li.active > a {
+  background-color: #eee;
+  border: 1px solid #eee;
+}
+
+#simon-container {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+#simon-container.my-turn {
+  background-color: #d9d9d9;
+  border: 1px solid #eee;
+}
+
 .currentPlayer {
   color: #F44336;
 }

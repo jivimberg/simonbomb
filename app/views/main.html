@@ -11,26 +11,29 @@
   </p>
 </div>
 
-<ul ng-show="players.length" class="nav nav-tabs">
-  <li ng-repeat="player in players" ng-class="{'active': $index==$parent.currentPlayerIdx.$value}">
-    <a>
-      <img ng-src="{{'images/animals/' + player.image}}" style="max-width:32px;">
-    </a>
-  </li>
-</ul>
+<div id="board">
+  <ul id="player-tabs" ng-show="players.length" class="nav nav-tabs">
+    <li ng-repeat="player in players" ng-class="{'active': $index===$parent.currentPlayerIdx.$value}">
+      <a ng-class="{ 'my-turn': isMyTurn }">
+        <img ng-src="{{'images/animals/' + player.image}}" style="max-width:32px;">
+      </a>
+    </li>
+  </ul>
 
-<div class="jumbotron container">
-  <div class="col-xs-6" ng-show="gameState.$value != 'game-over'">
-    <p><button class="btn btn-lg btn-success simon-btn" ng-click="pickColor('Green');" ng-disabled="!isMyTurn">Green</button></p>
-    <p><button class="btn btn-lg btn-danger simon-btn" ng-click="pickColor('Red');" ng-disabled="!isMyTurn">Red</button></p>
+  <div id="simon-container" class="jumbotron container" ng-class="{ 'my-turn': isMyTurn }">
+    <div class="col-xs-6" ng-show="gameState.$value != 'game-over'">
+      <p><button class="btn btn-lg btn-success simon-btn" ng-click="pickColor('Green');" ng-disabled="!isMyTurn">Green</button></p>
+      <p><button class="btn btn-lg btn-danger simon-btn" ng-click="pickColor('Red');" ng-disabled="!isMyTurn">Red</button></p>
+    </div>
+    <div class="col-xs-6" ng-show="gameState.$value != 'game-over'">
+      <p><button class="btn btn-lg btn-warning simon-btn" ng-click="pickColor('Yellow');" ng-disabled="!isMyTurn">Yellow</button></p>
+      <p><button class="btn btn-lg btn-info simon-btn" ng-click="pickColor('Blue');" ng-disabled="!isMyTurn">Blue</button></p>
+    </div>
+    <div ng-show="gameState.$value == 'game-over'">
+      <h1>GAME OVER</h1>
+    </div>
   </div>
-  <div class="col-xs-6" ng-show="gameState.$value != 'game-over'">
-    <p><button class="btn btn-lg btn-warning simon-btn" ng-click="pickColor('Yellow');" ng-disabled="!isMyTurn">Yellow</button></p>
-    <p><button class="btn btn-lg btn-info simon-btn" ng-click="pickColor('Blue');" ng-disabled="!isMyTurn">Blue</button></p>
-  </div>
-  <div ng-show="gameState.$value == 'game-over'">
-    <h1>GAME OVER</h1>
-  </div>
+
 </div>
 
 <div ng-show="isAdmin">
