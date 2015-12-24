@@ -77,6 +77,18 @@ body {
   border-bottom: 0;
 }
 
+#tab-indicator {
+  max-width: 6px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5px;
+  display: block;
+}
+
+#tab-indicator.hide-indicator {
+  visibility: hidden;
+}
+
 .nav-tabs > li.active > a.my-turn {
   background-color: #d9d9d9;
   border-bottom: 1px solid #d9d9d9;
