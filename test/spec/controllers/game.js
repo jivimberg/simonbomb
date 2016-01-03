@@ -14,9 +14,44 @@ describe('Controller: GameCtrl', function () {
     GameCtrl = $controller('GameCtrl', {
       $scope: scope
     });
+
+    scope.players.$remove();
   }));
 
-  it('should attach a list of awesomeThings to the scope', function () {
-    expect(scope.awesomeThings.length).toBe(3);
+  it('should have an empty list of players at the beginning', function () {
+    expect(scope.players.length).toBe(0);
   });
+
+  it('should have an empty list of playing players at the beginning', function () {
+    expect(scope.playing.length).toBe(0);
+  });
+
+  it('should have an empty simonSequence at the beginning', function () {
+    expect(scope.playing.length).toBe(0);
+  });
+
+  it('should not have gameState value defined at the beginning', function () {
+    expect(scope.gameState.$value).toBeUndefined();
+  });
+
+  it('should not have currentPlayerIdx value defined at the beginning', function () {
+    expect(scope.currentPlayerIdx.$value).toBeUndefined();
+  });
+
+  it('should not have currentPlayerIdx value defined at the beginning', function () {
+    expect(scope.playerRefId).toBeUndefined();
+  });
+
+  //it('should have a new player logged in', function (done) {
+  //  scope.players.$loaded(function() {
+  //    expect(scope.players.length).toBe(0);
+  //  });
+  //
+  //  scope.players.$watch(function() {
+  //    expect(scope.players.length).toBe(1);
+  //    done();
+  //  });
+  //
+  //  scope.loginNewPlayer();
+  //});
 });

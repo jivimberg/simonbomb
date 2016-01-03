@@ -191,14 +191,16 @@ angular.module('simonbombApp')
 
     /***** Players *********/
     $scope.loginNewPlayer = function () {
-      Auth.$authAnonymously({rememberMe: 'sessionOnly'})
-        .then(function(authData) {
-          console.log('Authenticated successfully with payload:', authData);
-          $scope.players.$add({uid: authData.uid, image: randomAnimal.image }).then(function(ref) {
-            $scope.playerRefId = ref.key();
-            Ref.child('players/' + $scope.playerRefId).onDisconnect().remove();
-          });
-        });
+      //TODO: perhaps we don't really need auth because we are removing the player with onDisconnect?
+      //Auth.$authAnonymously({rememberMe: 'sessionOnly'})
+      //  .then(function(authData) {
+      //    console.log('Authenticated successfully with payload:', authData);
+      //  });
+
+      $scope.players.$add({image: randomAnimal.image }).then(function(ref) {
+        $scope.playerRefId = ref.key();
+        Ref.child('players/' + $scope.playerRefId).onDisconnect().remove();
+      });
     };
 
     $scope.kickAllPlayers = function () {
